@@ -13,7 +13,7 @@ import java.time.Instant;
 
 public class StreamingJob {
 
-    private static final long CHECKPOINTING_INTERVAL_MS = 60000;
+    private static final long CHECKPOINTING_INTERVAL_MS = 80000;
     private static final String JOB_NAME = "Flink Streaming Java API Application";
 
     public static void main(String[] args) throws Exception {
@@ -24,29 +24,30 @@ public class StreamingJob {
                 .addSource(new OrderBookEventSource())
                 .name("order-book-event-source");
 
-        final OutputTag<Instant> eventsTimestampOutput = new OutputTag<>("side-output") {};
+        final OutputTag<Instant> eventsTimestampOutput = new OutputTag<>("side-output") {
+        };
 
         SingleOutputStreamOperator<OrderBookSingleCurrencyEvent> processed =
-        orderBookEvents
-            .keyBy(new OrderBookSingleCurrencyEventKeySelector())
-            .process(new OrderBookEventProcessFunction())
-            .name("order-book-event-processor");
+            orderBookEvents
+                .keyBy(new OrderBookSingleCurrencyEventKeySelector())
+                .process(new OrderBookEventProcessFunction())
+                .name("order-book-event-processor");
             /*.addSink(new DiscardingSink<>())
             .name("discarding-sink");*/
 
-        DataStream<Long> averages = processed
+        DataStream<Long> timestamps = processed
             .getSideOutput(eventsTimestampOutput)
             .windowAll(TumblingProcessingTimeWindows.of(Time.seconds(20)))
             .aggregate(new OrderBookEventProcessingTimeAggregate(), new OrderBookEventProcessingTimeWindowFunction())
             .name("order-book-event-processing-time-aggregator");
 
-        averages
-            .map(new HistogramMapFunction());
-            //.addSink(new LoggingSink<>())
-            //.name("discarding-sink");
+        timestamps
+            .map(new HistogramMapFunction())
+            .addSink(new DiscardingSink<>())
+            .name("discarding-sink");
 
         env
-            //.enableCheckpointing(CHECKPOINTING_INTERVAL_MS)
+            .enableCheckpointing(CHECKPOINTING_INTERVAL_MS)
             //.setStateBackend(new EmbeddedRocksDBStateBackend())
             .execute(JOB_NAME);
     }

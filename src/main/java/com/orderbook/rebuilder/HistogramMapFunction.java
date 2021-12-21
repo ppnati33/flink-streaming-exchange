@@ -1,6 +1,6 @@
 package com.orderbook.rebuilder;
 
-import com.codahale.metrics.SlidingWindowReservoir;
+import com.codahale.metrics.UniformReservoir;
 import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.dropwizard.metrics.DropwizardHistogramWrapper;
@@ -13,7 +13,7 @@ public class HistogramMapFunction extends RichMapFunction<Long, Long> {
     @Override
     public void open(Configuration config) {
         com.codahale.metrics.Histogram dropwizardHistogram =
-            new com.codahale.metrics.Histogram(new SlidingWindowReservoir(500));
+            new com.codahale.metrics.Histogram(new UniformReservoir(5000));
 
         this.histogram = getRuntimeContext()
             .getMetricGroup()

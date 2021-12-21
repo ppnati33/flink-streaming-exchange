@@ -8,6 +8,6 @@ public class OrderBookSingleCurrencyEventKeySelector
 
     @Override
     public String getKey(OrderBookSingleCurrencyEvent orderBookSingleCurrencyEvent) {
-        return orderBookSingleCurrencyEvent.getCurrency().name();
+        return orderBookSingleCurrencyEvent.getCurrency();
     }
 }

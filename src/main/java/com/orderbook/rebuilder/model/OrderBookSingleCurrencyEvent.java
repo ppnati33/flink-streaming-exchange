@@ -8,7 +8,7 @@ public class OrderBookSingleCurrencyEvent implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    Currency currency;
+    String currency;
     List<LevelPrice> asks;
     List<LevelPrice> bids;
     Instant timestamp;
@@ -18,7 +18,7 @@ public class OrderBookSingleCurrencyEvent implements Serializable {
     }
 
     public OrderBookSingleCurrencyEvent(
-        Currency currency,
+        String currency,
         List<LevelPrice> asks,
         List<LevelPrice> bids,
         Instant timestamp,
@@ -31,11 +31,11 @@ public class OrderBookSingleCurrencyEvent implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public Currency getCurrency() {
+    public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(Currency currency) {
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 

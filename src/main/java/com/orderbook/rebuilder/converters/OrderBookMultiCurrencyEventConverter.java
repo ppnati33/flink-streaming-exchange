@@ -40,10 +40,45 @@ public class OrderBookMultiCurrencyEventConverter {
 
                 Instant updateTimestamp = Instant.ofEpochSecond(payload.getTimestamp());
 
-                OrderBookSingleCurrencyEvent updateData =
-                    new OrderBookSingleCurrencyEvent(currency, asks, bids, updateTimestamp, event.getCreatedAt());
+                results.add(
+                    new OrderBookSingleCurrencyEvent(
+                        currency.toString(),
+                        asks,
+                        bids,
+                        updateTimestamp,
+                        event.getCreatedAt()
+                    )
+                );
 
-                results.add(updateData);
+                results.add(
+                    new OrderBookSingleCurrencyEvent(
+                        currency.toString() + "1",
+                        asks,
+                        bids,
+                        updateTimestamp,
+                        event.getCreatedAt()
+                    )
+                );
+
+                results.add(
+                    new OrderBookSingleCurrencyEvent(
+                        currency.toString() + "2",
+                        asks,
+                        bids,
+                        updateTimestamp,
+                        event.getCreatedAt()
+                    )
+                );
+
+                results.add(
+                    new OrderBookSingleCurrencyEvent(
+                        currency.toString() + "3",
+                        asks,
+                        bids,
+                        updateTimestamp,
+                        event.getCreatedAt()
+                    )
+                );
             }
         );
 
